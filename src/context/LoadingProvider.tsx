@@ -16,8 +16,8 @@ interface LoadingType {
 export const LoadingContext = createContext<LoadingType | null>(null);
 
 export const LoadingProvider = ({ children }: PropsWithChildren) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [loading, setLoading] = useState(0);
+  const [isLoading, setIsLoading] = useState(false); // Changed from true to false
+  const [loading, setLoading] = useState(100); // Changed from 0 to 100
 
   const value = {
     isLoading,
@@ -28,7 +28,8 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <LoadingContext.Provider value={value as LoadingType}>
-      {isLoading && <Loading percent={loading} />}
+      {/* Commented out loading screen */}
+      {/* {isLoading && <Loading percent={loading} />} */}
       <main className="main-body">{children}</main>
     </LoadingContext.Provider>
   );

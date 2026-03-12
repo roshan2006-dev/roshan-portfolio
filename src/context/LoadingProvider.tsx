@@ -3,6 +3,7 @@ import {
   PropsWithChildren,
   useContext,
   useState,
+  useEffect,
 } from "react";
 import Loading from "../components/Loading";
 
@@ -18,6 +19,23 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(0);
 
+  // Auto-increment loading to 100%
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLoading(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          // Small delay before hiding loading screen
+          setTimeout(() => setIsLoading(false), 500);
+          return 100;
+        }
+        return prev + 10; // Increase by 10% every 200ms
+      });
+    }, 200);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const value = {
     isLoading,
     setIsLoading,
@@ -25,7 +43,7 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <LoadingContext.Provider value={value as LoadingType}>
+    <LoadingContext.Provider value={value}>
       {isLoading && <Loading percent={loading} />}
       <main className="main-body">{children}</main>
     </LoadingContext.Provider>

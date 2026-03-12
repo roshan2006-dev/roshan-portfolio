@@ -21,19 +21,36 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
 
   // Auto-increment loading to 100%
   useEffect(() => {
+    console.log("Loading started");
+    
     const interval = setInterval(() => {
       setLoading(prev => {
+        const newValue = prev >= 100 ? 100 : prev + 10;
+        console.log("Loading percent:", newValue);
+        
         if (prev >= 100) {
           clearInterval(interval);
-          // Small delay before hiding loading screen
-          setTimeout(() => setIsLoading(false), 500);
+          console.log("Loading complete, hiding in 500ms");
+          setTimeout(() => {
+            console.log("Hiding loading screen now");
+            setIsLoading(false);
+          }, 500);
           return 100;
         }
-        return prev + 10; // Increase by 10% every 200ms
+        return prev + 10;
       });
     }, 200);
 
-    return () => clearInterval(interval);
+    // Emergency timeout - force hide after 5 seconds no matter what
+    const emergencyTimer = setTimeout(() => {
+      console.log("Emergency timeout - forcing loading to hide");
+      setIsLoading(false);
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(emergencyTimer);
+    };
   }, []);
 
   const value = {

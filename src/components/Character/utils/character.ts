@@ -13,7 +13,7 @@ const setCharacter = (
   loader.setDRACOLoader(dracoLoader);
 
   const loadCharacter = () => {
-    return new Promise<GLTF | null>(async (resolve, reject) => {
+    return new Promise<GLTF | null>((resolve, reject) => {
       try {
         let character: THREE.Object3D;
         loader.load(
@@ -24,10 +24,8 @@ const setCharacter = (
             character.traverse((child: any) => {
               if (child.isMesh) {
                 const mesh = child as THREE.Mesh;
-
-                // Change clothing colors to match site theme
                 if (mesh.material) {
-                  if (mesh.name === "BODY.SHIRT") { // The shirt mesh
+                  if (mesh.name === "BODY.SHIRT") {
                     const newMat = (mesh.material as THREE.Material).clone() as THREE.MeshStandardMaterial;
                     newMat.color = new THREE.Color("#8B4513");
                     mesh.material = newMat;
@@ -37,7 +35,6 @@ const setCharacter = (
                     mesh.material = newMat;
                   }
                 }
-
                 child.castShadow = true;
                 child.receiveShadow = true;
                 mesh.frustumCulled = true;
@@ -46,11 +43,12 @@ const setCharacter = (
             resolve(gltf);
             setCharTimeline(character, camera);
             setAllTimeline();
-            character!.getObjectByName("footR")!.position.y = 3.36;
-            character!.getObjectByName("footL")!.position.y = 3.36;
-
-            // Monitor scale is handled by GsapScroll.ts animations
-
+            if (character) {
+              const footR = character.getObjectByName("footR");
+              const footL = character.getObjectByName("footL");
+              if (footR) footR.position.y = 3.36;
+              if (footL) footL.position.y = 3.36;
+            }
             dracoLoader.dispose();
           },
           undefined,
@@ -65,7 +63,6 @@ const setCharacter = (
       }
     });
   };
-
   return { loadCharacter };
 };
 

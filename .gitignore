@@ -26,12 +26,11 @@ dist-ssr
 
 backup/
 .env
-# Add this to your .gitignore file:
 
 # 3D Models
 public/models/*.glb
-public/models/*.hdr
 public/models/*.enc
 public/models/character.glb
 *.glb
-*.hdr
+
+# Note: .hdr files are NOT ignored - they are needed for environment lighting
